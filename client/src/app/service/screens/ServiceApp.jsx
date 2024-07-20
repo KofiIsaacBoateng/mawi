@@ -17,6 +17,10 @@ import {
 import Map from "../components/Map";
 import CustomModal from "../components/CustomModal";
 import Feather from "react-native-vector-icons/Feather";
+import {
+  CompletedJobDetails,
+  RequestJobDetails,
+} from "../components/JobDetails";
 
 const userImage = `https://avatar.iran.liara.run/public/boy?username=chad${Math.floor(
   Math.random() * 201 + 100
@@ -320,14 +324,14 @@ const ServiceApp = () => {
       {/*** request details */}
       {showRequestedModal && (
         <CustomModal setShowModal={setShowRequestedModal}>
-          <Text>Requested Job Details</Text>
+          <RequestJobDetails details={"details"} />
         </CustomModal>
       )}
 
       {/*** completed jobs details */}
       {showCompletedModal && (
         <CustomModal setShowModal={setShowCompletedModal}>
-          <Text>Completed Job Details</Text>
+          <CompletedJobDetails details={"details"} />
         </CustomModal>
       )}
     </View>

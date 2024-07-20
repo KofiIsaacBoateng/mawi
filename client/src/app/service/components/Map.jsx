@@ -29,7 +29,9 @@ import Mapbox, {
 const ACCESS_TOKEN =
   "pk.eyJ1IjoiaWtoYXkiLCJhIjoiY2x5aXRma3JsMGcweDJsczh5dmR2dTZtMSJ9.S-Vx4yga6pqInFQ0fLcLnw";
 Mapbox.setAccessToken(ACCESS_TOKEN);
-
+const userImage = `https://avatar.iran.liara.run/public/boy?username=chad${Math.floor(
+  Math.random() * 201 + 100
+)}`;
 const { width, height } = Dimensions.get("window");
 
 const Map = ({ setShowMap }) => {
@@ -158,6 +160,7 @@ const Map = ({ setShowMap }) => {
               visible={true}
               showsUserHeadingIndicator={true}
               androidRenderMode="compass"
+              minDisplacement={2}
             />
 
             <MarkerView
@@ -240,9 +243,7 @@ const CustomMarkerWithCallout = () => {
             <Image
               style={styles.customCalloutImage}
               source={{
-                uri: `https://avatar.iran.liara.run/public/boy?username=chad${Math.floor(
-                  Math.random() * 201 + 100
-                )}`,
+                uri: userImage,
               }}
             />
             <View style={styles.tip} />
