@@ -4,7 +4,7 @@ import ServiceApp from "../app/service/screens/ServiceApp";
 import CustomerApp from "../app/custom/screens/CustomerApp";
 
 const MainNav = () => {
-  const role = "service-provider";
+  const role = "customer";
   return (
     <View style={{ flex: 1 }}>
       <StatusBar backgroundColor="transparent" barStyle="dark-content" />

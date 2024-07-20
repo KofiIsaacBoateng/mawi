@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.23.1",
+    "@react-native-community/datetimepicker": "^8.0.1",
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/stack": "^6.4.1",
     "@rnmapbox/maps": "^10.1.28",
+    "date-fns": "^3.6.0",
     "expo": "~51.0.21",
     "expo-camera": "^15.0.14",
     "expo-constants": "^16.0.2",
@@ -24,6 +26,7 @@
     "expo-secure-store": "^13.0.2",
     "expo-splash-screen": "^0.27.5",
     "expo-status-bar": "~1.12.1",
+    "expo-system-ui": "~3.0.7",
     "formik": "^2.4.6",
     "lottie-react-native": "6.7.0",
     "react": "18.2.0",
@@ -38,8 +41,7 @@
     "rn-emoji-keyboard": "^1.7.0",
     "socket.io-client": "^4.7.5",
     "uuid": "^10.0.0",
-    "yup": "^1.4.0",
-    "expo-system-ui": "~3.0.7"
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

@@ -233,25 +233,18 @@ const styles = StyleSheet.create({
     height,
     position: "absolute",
     top: 0,
+    left: 0,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#000",
   },
 
-  askLocation: {
-    width: 40,
-    aspectRatio: 1,
-    backgroundColor: "#000a",
-    borderRadius: 50,
-    position: "absolute",
-    bottom: 20,
-    right: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
   container: {
-    flex: 1,
+    width,
+    height,
+    position: "absolute",
+    top: 0,
+    left: 0,
     alignItems: "center",
     justifyContent: "center",
     zIndex: 15,
@@ -266,7 +259,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#000a",
     position: "absolute",
-    top: top + 30,
+    top: top,
     left: 10,
     zIndex: 10,
   }),
@@ -275,6 +268,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: width,
   },
+
   route: {
     lineWidth: 6,
     lineJoin: "round",
@@ -285,23 +279,21 @@ const styles = StyleSheet.create({
 
   marker: {
     alignItems: "center",
-    justifyContent: "flex-end",
-    position: "relative",
-    height: 150,
-    width: 150,
+    justifyContent: "center",
+    height: 230,
+    width: 100,
   },
 
   markerImage: {
-    position: "fixed",
     width: 50,
-    height: 70,
-    objectFit: "contain",
+    height: 50,
   },
 
   customCalloutWrapper: {
     alignItems: "center",
     position: "absolute",
-    bottom: 70,
+    position: "absolute",
+    bottom: 160,
   },
 
   customCallout: {
@@ -321,8 +313,6 @@ const styles = StyleSheet.create({
   customCalloutImage: {
     width: "100%",
     height: "100%",
-    objectFit: "contain",
-    zIndex: 1,
   },
 
   tip: {
@@ -335,30 +325,3 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
 });
-
-// <ShapeSource
-//   id="circleSource"
-//   shape={{
-//     type: "Feature",
-//     geometry: {
-//       type: "Point",
-//       coordinates: [-1.58333, 6.68333],
-//     },
-//   }}
-// >
-//   <CircleLayer
-//     id="outerCircleLayer"
-//     style={{
-//       circleRadius: 40,
-//       circleColor: "rgba(0, 150, 255, 0.15)",
-//       circlePitchAlignment: "map",
-//     }}
-//   />
-//   <CircleLayer
-//     id="innerCircleLayer"
-//     style={{
-//       circleRadius: 65,
-//       circleColor: "rgba(0, 150, 255, 0.25)",
-//     }}
-//   />
-// </ShapeSource>;

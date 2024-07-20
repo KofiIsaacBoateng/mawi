@@ -17,6 +17,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Animated, { SlideInDown, SlideOutDown } from "react-native-reanimated";
 import ServicesOverview from "../components/ServicesOverview";
+import RequestForm from "../components/RequestForm";
 
 const services = [
   {
@@ -50,6 +51,8 @@ const CustomerApp = () => {
   const [filters, setFilters] = useState({});
   const [servicePersons, setServicePersons] = useState([]);
   const [activePersonnel, setActivePersonnel] = useState(undefined);
+  const [showRequestForm, setShowRequestForm] = useState(false);
+  const [selectedHire, setSelectedHire] = useState(undefined);
 
   const search = async () => {};
 
@@ -106,19 +109,30 @@ const CustomerApp = () => {
             activeOpacity={0.8}
             style={styles.closeModal}
           >
-            <Ionicons name="close" size={28} color="#fff" />
+            <Ionicons name="close" size={28} color="#333c" />
           </TouchableOpacity>
           <View style={styles.dragger} />
 
           {/***** content */}
           {/**** services list */}
-          <ServiceCategories setFilters={setFilters} />
+          {/* <ServiceCategories setFilters={setFilters} /> */}
           {/***** visible service persons */}
-          {/* <ServicePersons setActivePersonnel={setActivePersonnel} /> */}
+          <ServicePersons
+            setShowRequestForm={setShowRequestForm}
+            setSelectedHire={setSelectedHire}
+            setActivePersonnel={setActivePersonnel}
+          />
         </Animated.View>
       )}
 
       {showOverview && <ServicesOverview setShowOverview={setShowOverview} />}
+      {showRequestForm && (
+        <RequestForm
+          selectedHire={selectedHire}
+          setSelectedHire={setSelectedHire}
+          setShowRequestForm={setShowRequestForm}
+        />
+      )}
     </View>
   );
 };
@@ -154,7 +168,17 @@ const ServiceCategories = ({ setFilters }) => {
   );
 };
 
-const ServicePersons = ({ setActivePersonnel }) => {
+const ServicePersons = ({
+  setActivePersonnel,
+  setSelectedHire,
+  setShowRequestForm,
+}) => {
+  const hirePersonnel = (service) => {
+    setShowRequestForm(true);
+    setSelectedHire(service);
+    setActivePersonnel(service);
+  };
+
   return (
     <View style={styles.services}>
       {/**** title */}
@@ -181,13 +205,15 @@ const ServicePersons = ({ setActivePersonnel }) => {
             </View>
             <View style={styles.profileDetails}>
               {/***** name */}
-              <Text style={styles.profileName}>Personnel Name</Text>
-              {/***** age */}
-              <Text style={styles.age}>Age: 36</Text>
+              <Text style={styles.profileName}>William Doe</Text>
+              {/**** title */}
+              <Text style={styles.profileTitle}>
+                Carpenter | Coffins | Furniture | Renovations
+              </Text>
               {/***** hire button */}
               <TouchableOpacity
                 style={styles.hireBtn}
-                onPress={() => setActivePersonnel(service)}
+                onPress={() => hirePersonnel(service)}
                 activeOpacity={0.8}
               >
                 <Text style={styles.hireText}>Hire me</Text>
@@ -281,9 +307,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: height * 0.4,
+    height: height * 0.45,
     zIndex: 15,
-    backgroundColor: "#000c",
+    backgroundColor: "#fffe",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
   },
@@ -299,7 +325,7 @@ const styles = StyleSheet.create({
     height: 7,
     marginHorizontal: "auto",
     marginTop: 5,
-    backgroundColor: "#fff",
+    backgroundColor: "#555",
     borderRadius: 50,
   },
 
@@ -313,7 +339,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     paddingLeft: 15,
     marginTop: 20,
-    color: "#fffc",
+    color: "#333c",
   },
 
   serviceList: {
@@ -322,7 +348,7 @@ const styles = StyleSheet.create({
   },
 
   serviceListContainer: {
-    paddingLeft: 15,
+    paddingHorizontal: 15,
     alignItems: "center",
     gap: 15,
   },
@@ -332,7 +358,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "#fff",
+    borderColor: "#000c",
     paddingVertical: 10,
     borderRadius: 5,
   },
@@ -344,17 +370,20 @@ const styles = StyleSheet.create({
 
   serviceTitle: {
     fontSize: 13,
-    color: "#fffc",
+    color: "#333c",
+    fontWeight: "700",
     marginTop: 10,
   },
 
   /***** personnel card */
   profile: {
-    minWidth: 150,
+    width: 150,
+    height: height * 0.3,
     gap: 5,
     alignItems: "center",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "#fff",
+    justifyContent: "flex-start",
+    borderWidth: 0.5,
+    borderColor: "#000c",
     paddingHorizontal: 5,
     paddingVertical: 10,
     borderRadius: 5,
@@ -374,28 +403,40 @@ const styles = StyleSheet.create({
     objectFit: "cover",
   },
 
-  profileDetails: {},
+  profileDetails: {
+    flex: 1,
+  },
   profileName: {
     fontSize: 16,
-    color: "#fffc",
+    color: "#333",
+    fontWeight: "800",
+    textAlign: "center",
+  },
+
+  profileTitle: {
+    marginVertical: 2,
+    fontSize: 12,
+    color: "#333d",
+    textAlign: "center",
   },
 
   age: {
     fontSize: 13,
-    color: "#fffa",
+    color: "#555",
+    fontWeight: "700",
   },
 
   hireBtn: {
-    backgroundColor: "turquoise",
+    backgroundColor: "#35b2a5",
     alignItems: "center",
     paddingVertical: 5,
-    marginTop: 10,
+    marginTop: "auto",
     borderRadius: 5,
   },
 
   hireText: {
     fontSize: 13,
     fontWeight: "bold",
-    color: "#555",
+    color: "#fff",
   },
 });
