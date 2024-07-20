@@ -2,19 +2,18 @@ import {
   ActivityIndicator,
   Dimensions,
   TouchableOpacity,
-  StatusBar,
   StyleSheet,
   View,
-  TextInput,
-  Text,
   Image,
+  Animated as RNAnimated,
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import Animated, { SlideInRight, SlideOutRight } from "react-native-reanimated";
+import Animated, {
+  Easing,
+  SlideInRight,
+  SlideOutRight,
+} from "react-native-reanimated";
 import * as Location from "expo-location";
-
-import AntDesign from "react-native-vector-icons/AntDesign";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import Mapbox, {
@@ -22,11 +21,7 @@ import Mapbox, {
   Camera,
   UserLocation,
   UserTrackingMode,
-  PointAnnotation,
-  Callout,
   MarkerView,
-  CircleLayer,
-  ShapeSource,
 } from "@rnmapbox/maps";
 
 const ACCESS_TOKEN =
@@ -35,12 +30,10 @@ Mapbox.setAccessToken(ACCESS_TOKEN);
 
 const { width, height } = Dimensions.get("window");
 const Map = () => {
-  const insets = useSafeAreaInsets();
   const mapRef = useRef(null);
   const [location, setLocation] = useState(undefined);
   const [permissionStatus, setPermissionStatus] = useState(undefined);
   const [gotLocation, setGotLocation] = useState(false);
-  const [searchText, setSearchText] = useState("");
 
   const requestLocationPermission = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -140,42 +133,95 @@ const Map = () => {
         />
 
         {/**** destination custom marker */}
-        <MarkerView id="marker" coordinate={[-1.58333, 6.68333]}>
-          <View style={styles.customCalloutWrapper}>
-            <CustomCallout />
-          </View>
-
-          <View style={[styles.marker]}>
-            <Image
-              source={require("../../../../assets/photos/destination-marker.png")}
-              style={styles.markerImage}
-            />
-          </View>
+        <MarkerView
+          anchor={{ x: 0.5, y: 0.5 }}
+          id="marker"
+          coordinate={[-1.58333, 6.68333]}
+        >
+          <CustomMarkerWithCallout />
         </MarkerView>
 
-        <MarkerView id="destination-marker" coordinate={[-1.58393, 6.68893]}>
-          <View style={styles.marker}>
-            <Animated.Image
-              source={require("../../../../assets/photos/destination-marker.png")}
-              style={styles.markerImage}
-            />
-          </View>
+        <MarkerView
+          anchor={{ x: 0.5, y: 0.5 }}
+          id="destination-marker"
+          coordinate={[-1.58393, 6.68893]}
+        >
+          <CustomMarkerWithCallout />
         </MarkerView>
       </MapView>
     </Animated.View>
   );
 };
 
-const CustomCallout = () => {
+const CustomMarkerWithCallout = () => {
+  const [showCallout, setShowCallout] = useState(false);
+  const calloutOpacity = useRef(new RNAnimated.Value(0)).current;
+  const calloutPosition = useRef(new RNAnimated.Value(10)).current;
+
+  const toggleCallout = () => {
+    if (showCallout) {
+      // Hide callout
+      RNAnimated.timing(calloutOpacity, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+      RNAnimated.timing(calloutPosition, {
+        toValue: 10,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => setShowCallout(false));
+    } else {
+      // Show callout
+      setShowCallout(true);
+      RNAnimated.timing(calloutOpacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+      RNAnimated.timing(calloutPosition, {
+        toValue: 0,
+        duration: 300,
+        easing: Easing.out(Easing.ease),
+        useNativeDriver: true,
+      }).start();
+    }
+  };
+
   return (
-    <View style={styles.customCallout}>
+    <TouchableOpacity
+      onPress={toggleCallout}
+      activeOpacity={0.85}
+      style={styles.marker}
+    >
+      {showCallout && (
+        <RNAnimated.View
+          style={[
+            styles.customCalloutWrapper,
+            {
+              opacity: calloutOpacity,
+              transform: [{ translateY: calloutPosition }],
+            },
+          ]}
+        >
+          <View style={styles.customCallout}>
+            <Image
+              style={styles.customCalloutImage}
+              source={{
+                uri: `https://avatar.iran.liara.run/public/boy?username=chad${Math.floor(
+                  Math.random() * 201 + 100
+                )}`,
+              }}
+            />
+            <View style={styles.tip} />
+          </View>
+        </RNAnimated.View>
+      )}
       <Image
-        style={styles.customCalloutImage}
-        source={{
-          uri: "https://avatar.iran.liara.run/public/boy",
-        }}
+        source={require("../../../../assets/photos/destination-marker.png")}
+        style={styles.markerImage}
       />
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -239,9 +285,14 @@ const styles = StyleSheet.create({
 
   marker: {
     alignItems: "center",
+    justifyContent: "flex-end",
+    position: "relative",
+    height: 150,
+    width: 150,
   },
 
   markerImage: {
+    position: "fixed",
     width: 50,
     height: 70,
     objectFit: "contain",
@@ -249,12 +300,14 @@ const styles = StyleSheet.create({
 
   customCalloutWrapper: {
     alignItems: "center",
+    position: "absolute",
+    bottom: 70,
   },
 
   customCallout: {
     width: 70,
     height: 70,
-    backgroundColor: "#43e8d878",
+    backgroundColor: "turquoise",
     borderRadius: 100,
     padding: 5,
     alignItems: "center",
@@ -269,6 +322,17 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     objectFit: "contain",
+    zIndex: 1,
+  },
+
+  tip: {
+    position: "absolute",
+    bottom: -5,
+    width: 20,
+    height: 20,
+    transform: [{ rotate: "45deg" }],
+    backgroundColor: "turquoise",
+    zIndex: -1,
   },
 });
 
