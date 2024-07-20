@@ -22,8 +22,6 @@ const UserSchema = new mongoose.Schema(
 
     mobile: {
       type: String,
-      required: [true, "Please verify your mobile number"],
-      unique: true,
     },
 
     email: {
@@ -61,6 +59,7 @@ const UserSchema = new mongoose.Schema(
       select: false,
     },
   },
+
   {
     timestamps: true,
   }
