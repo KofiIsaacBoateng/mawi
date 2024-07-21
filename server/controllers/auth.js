@@ -14,9 +14,9 @@ const signToken = (_id) => {
 };
 
 module.exports.register = async (req, res) => {
-  const { email, password, name, role, mobile } = req.body;
+  const { email, password, name, role } = req.body;
 
-  if (!email || !password || !name || !role || !mobile) {
+  if (!email || !password || !name || !role) {
     throw new BadRequestError(
       "Please provide an email, password, name, and mobile"
     );

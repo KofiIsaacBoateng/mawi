@@ -13,14 +13,9 @@ const UserSchema = new mongoose.Schema(
 
     title: {
       type: String,
-      required: true,
     },
 
     about: {
-      type: String,
-    },
-
-    mobile: {
       type: String,
     },
 

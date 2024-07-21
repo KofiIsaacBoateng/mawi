@@ -20,7 +20,7 @@ const ServicesOverview = ({ setShowOverview }) => {
       >
         <AntDesign name="arrowleft" size={25} color="#fff" />
       </TouchableOpacity>
-      <Text style={styles.te}>Services Overview</Text>
+      <Text style={styles.te}>You haven't hired anyone yet</Text>
     </Animated.View>
   );
 };

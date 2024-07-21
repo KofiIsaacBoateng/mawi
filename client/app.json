@@ -4,20 +4,20 @@
     "slug": "mawi",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/electrician.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/electrician.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#003438"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/electrician.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#003438"
       },
       "permissions": [
         "android.permission.CAMERA",
@@ -28,7 +28,7 @@
       "package": "com.mawi.serve"
     },
     "web": {
-      "favicon": "./assets/electrician.png"
+      "favicon": "./assets/icon.png"
     },
     "plugins": [
       [

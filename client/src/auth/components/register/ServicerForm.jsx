@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   StyleSheet,
@@ -22,10 +23,11 @@ import LottieView from "lottie-react-native";
 import { useFormik } from "formik";
 import { registrationValidationSchema } from "../../screens/utils/ValidationSchemas";
 import { useNavigation } from "@react-navigation/native";
+import useRegister from "../../hooks/useRegister";
 
 const { width, height } = Dimensions.get("window");
 const ServiceForm = ({ setActiveRole }) => {
-  const navigation = useNavigation();
+  const [loading, register] = useRegister();
   const insets = useSafeAreaInsets();
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -34,16 +36,22 @@ const ServiceForm = ({ setActiveRole }) => {
       name: "",
       email: "",
       password: "",
-      role: "",
+      role: "service-provider",
       title: "",
       about: "",
     },
-    // validationSchema: registrationValidationSchema,
-    onSubmit: (values, helpers) => submit(values),
+    validationSchema: registrationValidationSchema,
+    onSubmit: submit,
   });
 
-  const submit = (values) => {
-    navigation.navigate("Main");
+  const submit = async (values) => {
+    console.log("registering service person");
+    await register({
+      ...values,
+      photo: `https://avatar.iran.liara.run/public/boy?username=${values.name
+        .toLowerCase()
+        .join("-")}`,
+    });
   };
 
   const formTransition = useAnimatedStyle(() => ({
@@ -82,6 +90,7 @@ const ServiceForm = ({ setActiveRole }) => {
           formik={formik}
           setCurrentPage={setCurrentPage}
           currentPage={currentPage}
+          loading={loading}
         />
       </Animated.View>
     </Animated.View>
@@ -171,7 +180,7 @@ const PersonalInfo = ({ currentPage, setCurrentPage, formik }) => {
   );
 };
 
-const WorkInfo = ({ setCurrentPage, currentPage, formik }) => {
+const WorkInfo = ({ setCurrentPage, currentPage, formik, loading }) => {
   const titleRef = useRef(null);
   const aboutRef = useRef(null);
 
@@ -236,7 +245,11 @@ const WorkInfo = ({ setCurrentPage, currentPage, formik }) => {
             { backgroundColor: "#0c0d34" },
           ]}
         >
-          <Text style={[styles.buttonText, { color: "#fff" }]}>Register</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="#000c" />
+          ) : (
+            <Text style={[styles.buttonText, { color: "#fff" }]}>Register</Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>

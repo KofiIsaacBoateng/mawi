@@ -120,7 +120,7 @@ const Map = () => {
           zoomLevel={16}
           followUserLocation
           followPitch={60}
-          followZoomLevel={16}
+          followZoomLevel={14}
           followUserMode={UserTrackingMode.FollowWithHeading}
           animationMode="flyTo"
         />

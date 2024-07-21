@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import React, { useRef } from "react";
 import Animated, { SlideInRight, SlideOutRight } from "react-native-reanimated";
@@ -13,7 +14,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import LottieView from "lottie-react-native";
 import { useFormik } from "formik";
 import { registrationValidationSchemaForCustomer } from "../../screens/utils/ValidationSchemas";
-import { useNavigation } from "@react-navigation/native";
+import useRegister from "../../hooks/useRegister";
 
 const customInputStyle = {
   width: "85%",
@@ -23,31 +24,36 @@ const customInputStyle = {
 
 const { height, width } = Dimensions.get("window");
 const CustomerForm = ({ setActiveRole }) => {
-  const navigation = useNavigation();
+  const [loading, register] = useRegister();
   const insets = useSafeAreaInsets();
   const nameRef = useRef(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+
+  const submit = async (values) => {
+    console.log("registering");
+    const result = await register({
+      ...formik.values,
+      photo: `https://avatar.iran.liara.run/public/boy?username=${formik.values.name
+        .toLowerCase()
+        .split(" ")
+        .join("-")}-${Math.random()}`,
+    });
+  };
 
   const formik = useFormik({
     initialValues: {
       name: "",
       email: "",
       password: "",
-      role: "",
-      title: "",
-      about: "",
+      role: "customer",
     },
-    // validationSchema: registrationValidationSchemaForCustomer,
-    onSubmit: (values, helpers) => submit(values),
+    validationSchema: registrationValidationSchemaForCustomer,
+    onSubmit: submit,
   });
-
-  const submit = (values) => {
-    navigation.navigate("Main");
-  };
-
+  console.log(formik.values);
   return (
-    <Animated.View
+    <Animated.ScrollView
       entering={SlideInRight}
       exiting={SlideOutRight}
       style={[styles.container, { paddingTop: insets.top + 10 }]}
@@ -107,6 +113,7 @@ const CustomerForm = ({ setActiveRole }) => {
         reference={passwordRef}
         returnKeyLabel="Continue"
         returnKeyType="next"
+        keyboardType={""}
         formik={formik}
         customStyle={customInputStyle}
       />
@@ -124,10 +131,14 @@ const CustomerForm = ({ setActiveRole }) => {
           activeOpacity={0.8}
           style={styles.button}
         >
-          <Text style={styles.buttonText}>Register</Text>
+          {loading ? (
+            <ActivityIndicator size="large" color="#000c" />
+          ) : (
+            <Text style={styles.buttonText}>Register</Text>
+          )}
         </TouchableOpacity>
       </View>
-    </Animated.View>
+    </Animated.ScrollView>
   );
 };
 
@@ -175,7 +186,7 @@ const styles = StyleSheet.create({
     width: "90%",
     paddingVertical: 15,
     backgroundColor: "#fff",
-    marginTop: "auto",
+    marginTop: 30,
     zIndex: 10,
     alignItems: "center",
     borderRadius: 10,

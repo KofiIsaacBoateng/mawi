@@ -52,6 +52,7 @@ const CustomTextInputs = ({
         returnKeyLabel={returnKeyLabel}
         returnKeyType={returnKeyType}
         keyboardType={keyboardType ?? "default"}
+        secureTextEntry={type === "password"}
         style={styles.input}
         multiline={multiline}
       />

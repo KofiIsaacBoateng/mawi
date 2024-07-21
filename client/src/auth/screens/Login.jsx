@@ -1,6 +1,8 @@
 import {
+  ActivityIndicator,
   Dimensions,
   KeyboardAvoidingView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -13,9 +15,11 @@ import { useNavigation } from "@react-navigation/native";
 import { useFormik } from "formik";
 import { loginValidationSchema } from "./utils/ValidationSchemas";
 import CustomTextInputs from "../components/CustomTextInput";
+import useLogin from "../hooks/useLogin";
 
 const { width, height } = Dimensions.get("window");
 const Login = () => {
+  const [loading, login] = useLogin();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const emailRef = useRef(null);
@@ -26,21 +30,27 @@ const Login = () => {
     marginTop: 25,
   };
 
+  const submit = async (values) => {
+    console.log("logging in...");
+    const result = await login(values);
+  };
+
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
-    // validationSchema: loginValidationSchema,
-    onSubmit: (values, helpers) => submit(values),
+    validationSchema: loginValidationSchema,
+    onSubmit: submit,
   });
 
-  const submit = (values) => {
-    navigation.navigate("Main");
-  };
-
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <ScrollView
+      contentContainerStyle={{
+        alignItems: "center",
+      }}
+      style={[styles.container, { paddingTop: insets.top }]}
+    >
       {/***** banner */}
       <View style={styles.banner}>
         <LottieView
@@ -94,11 +104,15 @@ const Login = () => {
           activeOpacity={0.8}
           style={[styles.buttons]}
         >
-          <Text style={[styles.buttonText, styles.loginText]}>Login</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="#000c" />
+          ) : (
+            <Text style={[styles.buttonText, styles.loginText]}>Login</Text>
+          )}
         </TouchableOpacity>
       </View>
       {/***** sign up text */}
-    </View>
+    </ScrollView>
   );
 };
 
@@ -109,7 +123,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#066f66",
     width,
-    alignItems: "center",
   },
 
   banner: {
