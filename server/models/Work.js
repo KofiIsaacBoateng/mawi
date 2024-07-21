@@ -13,16 +13,36 @@ const WorkSchema = new mongoose.Schema(
       ref: "User",
     },
 
-    scheduled: {
-      type: Date,
-      default: Date.now(),
+    title: {
+      type: String,
     },
 
     jobDescription: {
       type: String,
       required: true,
     },
+
+    bid: {
+      type: String,
+    },
+
+    dateTime: {
+      type: Date,
+      default: Date.now(),
+    },
+
+    jobLocation: { type: [Number], select: false },
+
+    status: {
+      type: String,
+      enum: {
+        values: ["pending", "accepted", "rejected"],
+        message: "{VALUE} is an invalid status",
+      },
+      default: "pending",
+    },
   },
+
   {
     timestamps: true,
     toJSON: { virtuals: true },
@@ -30,9 +50,10 @@ const WorkSchema = new mongoose.Schema(
   }
 );
 
-WorkSchema.pre(/^find/, function () {
+WorkSchema.pre(/^find/, function (next) {
   this.populate("customer");
   this.populate("servicer");
+  next();
 });
 
 module.exports = mongoose.model("Work", WorkSchema);

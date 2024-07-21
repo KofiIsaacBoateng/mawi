@@ -4,8 +4,7 @@ const User = require("../models/User");
 module.exports.getServicesWithin = async (req, res) => {
   const { lnglat, serviceType } = req.params;
   const [longitude, latitude] = lnglat.split(",");
-  // const radius = unit === "miles" ? distance / 3963.2 : distance / 6378.1;
-  const radius = 0.00003347301604403137;
+  const radius = 30 / 6378.1;
   let serviceTypeObject = {};
 
   if (serviceType && serviceType !== "none") {
@@ -17,7 +16,7 @@ module.exports.getServicesWithin = async (req, res) => {
       $geoWithin: { $centerSphere: [[longitude, latitude], radius] },
     },
     ...serviceTypeObject,
-  });
+  }).limit(15);
 
   res.status(StatusCodes.OK).json({
     success: true,
