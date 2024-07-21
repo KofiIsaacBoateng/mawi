@@ -9,6 +9,13 @@ module.exports.requestService = async (req, res) => {
   });
 };
 
+modules.rejectRequest = async (req, res) => {
+  res.status(StatusCodes.OK).json({
+    success: true,
+    msg: "Service request has been closed!",
+  });
+};
+
 module.exports.closeRequest = async (req, res) => {
   res.status(StatusCodes.OK).json({
     success: true,

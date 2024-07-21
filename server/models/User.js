@@ -19,6 +19,12 @@ const UserSchema = new mongoose.Schema(
       type: String,
     },
 
+    mobile: {
+      type: String,
+      unique: false,
+      default: "",
+    },
+
     email: {
       type: String,
       required: true,
@@ -46,19 +52,16 @@ const UserSchema = new mongoose.Schema(
       },
     },
 
-    location: {
-      type: {
-        latitude: Number,
-        longitude: Number,
-      },
-      select: false,
-    },
+    location: [Number],
   },
 
   {
     timestamps: true,
   }
 );
+
+UserSchema.index({ title: 1, about: 1, name: 1 });
+UserSchema.index({ location: "2dsphere" });
 
 // encrypt password
 UserSchema.pre("save", async function (next) {

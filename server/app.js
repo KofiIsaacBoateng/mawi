@@ -4,6 +4,7 @@ const cors = require("cors");
 const errorHandler = require("./middleware/errorHandler");
 const routeNotFound = require("./middleware/routeNotFound");
 const authRoute = require("./routes/auth");
+const serviceRoute = require("./routes/services");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(cors());
 
 /**** routes */
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/services", serviceRoute);
 
 /***** error middleware */
 app.use(errorHandler);
