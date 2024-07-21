@@ -16,7 +16,9 @@ module.exports.requestService = async (req, res) => {
 };
 
 module.exports.rejectRequest = async (req, res) => {
-  const work = await Work.findByIdAndUpdate(req.params, { status: "rejected" });
+  const work = await Work.findByIdAndUpdate(req.params.id, {
+    status: "rejected",
+  });
 
   if (!work) {
     throw new BadRequestError("Invalid request!");
@@ -31,7 +33,7 @@ module.exports.rejectRequest = async (req, res) => {
 
 module.exports.acceptRequest = async (req, res) => {
   const work = await Work.findByIdAndUpdate(
-    req.params,
+    req.params.id,
     { status: "accepted" },
     { runValidators: true, new: true }
   );
@@ -60,8 +62,9 @@ module.exports.acceptRequest = async (req, res) => {
 };
 
 module.exports.getAllConversations = async (req, res) => {
+  const role = req.params.role === "service-provider" ? "servicer" : "customer";
   const conversations = await Conversation.find({
-    [req.params.role]: req.userId,
+    [role]: req.userId,
   });
 
   res.status(StatusCodes.OK).json({

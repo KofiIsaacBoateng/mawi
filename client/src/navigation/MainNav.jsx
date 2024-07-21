@@ -9,25 +9,28 @@ import React from "react";
 import ServiceApp from "../app/service/screens/ServiceApp";
 import CustomerApp from "../app/custom/screens/CustomerApp";
 import { useGlobalState } from "../context/GlobalState";
+import ConvoContext from "../app/context/ConversationContext";
 
 const MainNav = () => {
   const { user } = useGlobalState();
 
   return (
-    <View style={{ flex: 1 }}>
-      <StatusBar backgroundColor="transparent" barStyle="dark-content" />
-      {!user?.role ? (
-        <View style={styles.loader}>
-          <ActivityIndicator size="large" color="#fff" />
-        </View>
-      ) : user?.role === "service-provider" ? (
-        <ServiceApp />
-      ) : user?.role === "customer" ? (
-        <CustomerApp />
-      ) : (
-        <></>
-      )}
-    </View>
+    <ConvoContext>
+      <View style={{ flex: 1 }}>
+        <StatusBar backgroundColor="transparent" barStyle="dark-content" />
+        {!user?.role ? (
+          <View style={styles.loader}>
+            <ActivityIndicator size="large" color="#fff" />
+          </View>
+        ) : user?.role === "service-provider" ? (
+          <ServiceApp />
+        ) : user?.role === "customer" ? (
+          <CustomerApp />
+        ) : (
+          <></>
+        )}
+      </View>
+    </ConvoContext>
   );
 };
 

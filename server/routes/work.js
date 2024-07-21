@@ -7,20 +7,20 @@ const {
   getConversation,
   sendMessage,
 } = require("../controllers/work");
+const protector = require("../middleware/protector");
 const router = express.Router();
 
-// request service
-router.route("/send").post(requestService);
-// reject
-router.route("/reject").patch(rejectRequest);
-// accept
-router.route("/accept").patch(acceptRequest);
+// rubber wearable
+router.use(protector);
 
-// get all conversation
+//service
+router.route("/send").post(requestService);
+router.route("/reject/:id").patch(rejectRequest);
+router.route("/accept/:id").patch(acceptRequest);
+
+// conversation channels
 router.route("/messaging/convos/:role").get(getAllConversations);
-// get a conversation
 router.route("/messaging/convo/:id").get(getConversation);
-// send message
-router.route("/messaging/send-message").post(sendMessage);
+router.route("/messaging/send-message/:id").post(sendMessage);
 
 module.exports = router;
