@@ -1,20 +1,28 @@
-import { StatusBar, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React from "react";
 import ServiceApp from "../app/service/screens/ServiceApp";
 import CustomerApp from "../app/custom/screens/CustomerApp";
 import { useGlobalState } from "../context/GlobalState";
 
 const MainNav = () => {
-  const {
-    user: { role },
-  } = useGlobalState();
+  const { user } = useGlobalState();
 
   return (
     <View style={{ flex: 1 }}>
       <StatusBar backgroundColor="transparent" barStyle="dark-content" />
-      {role === "service-provider" ? (
+      {!user?.role ? (
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color="#fff" />
+        </View>
+      ) : user?.role === "service-provider" ? (
         <ServiceApp />
-      ) : role === "customer" ? (
+      ) : user?.role === "customer" ? (
         <CustomerApp />
       ) : (
         <></>
@@ -25,4 +33,11 @@ const MainNav = () => {
 
 export default MainNav;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  loader: {
+    flex: 1,
+    backgroundColor: "#000",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

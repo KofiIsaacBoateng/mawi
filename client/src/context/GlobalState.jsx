@@ -9,6 +9,18 @@ const GlobalState = ({ children }) => {
   const [authStatus, setAuthStatus] = useState(undefined);
   const [token, setToken] = useState(undefined);
 
+  /**** clear storage */
+  const clearStorage = async () => {
+    setAuthStatus(undefined);
+    setToken(undefined);
+    setUser(undefined);
+    await SecureStore.deleteItemAsync("auth-status");
+    await SecureStore.deleteItemAsync("token");
+    AsyncStorage.removeItem("user");
+  };
+
+  // clearStorage();
+
   const getUser = async () => {
     const authStatusString = await SecureStore.getItemAsync("auth-status");
     if (authStatusString) {
@@ -17,14 +29,14 @@ const GlobalState = ({ children }) => {
       setAuthStatus("no-auth");
     }
 
-    const tokenString = await SecureStore.getItemAsync("token");
-    if (tokenString) {
-      setToken(tokenString);
-    }
-
     const userString = await AsyncStorage.getItem("user");
     if (userString) {
       setUser((prev) => JSON.parse(userString));
+    }
+
+    const tokenString = await SecureStore.getItemAsync("token");
+    if (tokenString) {
+      setToken(tokenString);
     }
   };
 

@@ -99,20 +99,16 @@ const RequestForm = ({ selectedHire, setSelectedHire, setShowRequestForm }) => {
         <View style={styles.hire}>
           <Image
             source={{
-              uri: `https://avatar.iran.liara.run/public/boy?username=chad${Math.floor(
-                Math.random() * 201 + 100
-              )}`,
+              uri: selectedHire.photo,
             }}
             style={styles.hireImage}
           />
           <View style={styles.hireDetails}>
             <View style={styles.hireNameWrapper}>
-              <Text style={styles.hireName}>William Doe</Text>
+              <Text style={styles.hireName}>{selectedHire.name}</Text>
               <Text style={styles.hireIndicator}>New hire</Text>
             </View>
-            <Text style={styles.hireTitle}>
-              Carpenter | Coffins | Furniture | Renovations
-            </Text>
+            <Text style={styles.hireTitle}>{selectedHire.title}</Text>
           </View>
         </View>
       </View>

@@ -22,6 +22,8 @@ import Mapbox, {
   UserLocation,
   UserTrackingMode,
   MarkerView,
+  ShapeSource,
+  SymbolLayer,
 } from "@rnmapbox/maps";
 
 const ACCESS_TOKEN =
@@ -29,11 +31,9 @@ const ACCESS_TOKEN =
 Mapbox.setAccessToken(ACCESS_TOKEN);
 
 const { width, height } = Dimensions.get("window");
-const Map = () => {
+const Map = ({ location, setLocation, servicePersons, activePersonnel }) => {
   const mapRef = useRef(null);
-  const [location, setLocation] = useState(undefined);
   const [permissionStatus, setPermissionStatus] = useState(undefined);
-  const [gotLocation, setGotLocation] = useState(false);
 
   const requestLocationPermission = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -51,27 +51,35 @@ const Map = () => {
     setLocation(location);
   }, []);
 
-  const flyToUsersLocation = () => {
-    if (!mapRef.current) return;
+  const fitToUserLocation = (userLocation) => {
+    mapRef.current?.fitBounds(
+      [location.coords.longitude, location.coords.latitude],
+      userLocation,
+      [50, 50, height * 0.5, 50],
+      1000
+    );
+  };
 
-    mapRef.current.setCamera({
-      centerCoordinate: [location.coords.longitude, location.coords.latitude],
-      zoomLevel: 14,
-      animationDuration: 1000,
+  const flyToUserLocation = (userLocation) => {
+    mapRef.current?.setCamera({
+      centerCoordinate: userLocation,
       animationMode: "flyTo",
+      animationDuration: 1000,
+      zoomLevel: 20,
     });
   };
 
-  const search = () => {
-    console.log("searching...");
-  };
+  useEffect(() => {
+    if (activePersonnel?._id) {
+      // fitToUserLocation(activePersonnel.location);
+      flyToUserLocation(activePersonnel.location);
+    }
+  }, [activePersonnel]);
 
   useEffect(() => {
     let locationUpdateInterval = undefined;
     if (permissionStatus === "granted") {
-      // get user location every 5000ms
       getUserLocation();
-      setGotLocation(true);
     }
 
     return () => {
@@ -117,9 +125,9 @@ const Map = () => {
       >
         <Camera
           ref={mapRef}
-          zoomLevel={16}
-          followUserLocation
-          followPitch={60}
+          zoomLevel={14}
+          followUserLocation={!activePersonnel}
+          followPitch={40}
           followZoomLevel={14}
           followUserMode={UserTrackingMode.FollowWithHeading}
           animationMode="flyTo"
@@ -133,30 +141,40 @@ const Map = () => {
         />
 
         {/**** destination custom marker */}
-        <MarkerView
-          anchor={{ x: 0.5, y: 0.5 }}
-          id="marker"
-          coordinate={[-1.58333, 6.68333]}
-        >
-          <CustomMarkerWithCallout />
-        </MarkerView>
-
-        <MarkerView
-          anchor={{ x: 0.5, y: 0.5 }}
-          id="destination-marker"
-          coordinate={[-1.58393, 6.68893]}
-        >
-          <CustomMarkerWithCallout />
-        </MarkerView>
+        {servicePersons.length > 0 &&
+          servicePersons.map((person) => (
+            <MarkerView
+              key={person._id}
+              anchor={{ x: 0.5, y: 0.5 }}
+              id="marker"
+              coordinate={person.location}
+            >
+              <CustomMarkerWithCallout
+                activePersonnel={activePersonnel}
+                _id={person._id}
+                photo={person.photo}
+              />
+            </MarkerView>
+          ))}
       </MapView>
     </Animated.View>
   );
 };
 
-const CustomMarkerWithCallout = () => {
+const CustomMarkerWithCallout = ({ photo, activePersonnel, _id }) => {
   const [showCallout, setShowCallout] = useState(false);
   const calloutOpacity = useRef(new RNAnimated.Value(0)).current;
   const calloutPosition = useRef(new RNAnimated.Value(10)).current;
+
+  useEffect(() => {
+    if (activePersonnel?._id === _id) {
+      setShowCallout(false);
+      toggleCallout();
+    } else {
+      setShowCallout(true);
+      toggleCallout();
+    }
+  }, [activePersonnel]);
 
   const toggleCallout = () => {
     if (showCallout) {
@@ -208,9 +226,7 @@ const CustomMarkerWithCallout = () => {
             <Image
               style={styles.customCalloutImage}
               source={{
-                uri: `https://avatar.iran.liara.run/public/boy?username=chad${Math.floor(
-                  Math.random() * 201 + 100
-                )}`,
+                uri: photo,
               }}
             />
             <View style={styles.tip} />
@@ -281,7 +297,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: 230,
-    width: 100,
+    width: 72,
   },
 
   markerImage: {
