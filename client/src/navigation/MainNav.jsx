@@ -10,6 +10,123 @@ import ServiceApp from "../app/service/screens/ServiceApp";
 import CustomerApp from "../app/custom/screens/CustomerApp";
 import { useGlobalState } from "../context/GlobalState";
 import ConvoContext from "../app/context/ConversationContext";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import ChatScreen from "../app/screens/ChatScreen";
+
+// icons
+import Octicons from "react-native-vector-icons/Octicons";
+import Ionicons from "react-native-vector-icons/Ionicons";
+
+const CustomerBottomTab = createBottomTabNavigator();
+const ServicerBottomTab = createBottomTabNavigator();
+
+const CustomerAppNavigation = () => {
+  return (
+    <CustomerBottomTab.Navigator
+      screenOptions={{
+        header: () => null,
+        tabBarStyle: {
+          height: 55,
+          position: "absolute",
+          zIndex: 3,
+        },
+      }}
+    >
+      <CustomerBottomTab.Screen
+        options={{
+          tabBarIcon: ({ focused, color, size }) => (
+            <Octicons
+              name="home"
+              size={22}
+              color={focused ? "#35b2a5" : "#555"}
+            />
+          ),
+
+          tabBarLabel: ({ focused }) => (
+            <Text style={[styles.label, focused && { color: "#35b2a5" }]}>
+              Home
+            </Text>
+          ),
+        }}
+        name="Home"
+        component={CustomerApp}
+      />
+      <CustomerBottomTab.Screen
+        options={{
+          tabBarIcon: ({ focused, color, size }) => (
+            <Ionicons
+              name="chatbubbles-outline"
+              size={22}
+              color={focused ? "#35b2a5" : "#555"}
+            />
+          ),
+
+          tabBarLabel: ({ focused }) => (
+            <Text style={[styles.label, focused && { color: "#35b2a5" }]}>
+              Chat
+            </Text>
+          ),
+        }}
+        name="Chat"
+        component={ChatScreen}
+      />
+    </CustomerBottomTab.Navigator>
+  );
+};
+
+const ServicerAppNavigation = () => {
+  return (
+    <ServicerBottomTab.Navigator
+      screenOptions={{
+        header: () => null,
+        tabBarStyle: {
+          height: 55,
+          position: "absolute",
+          zIndex: 3,
+        },
+      }}
+    >
+      <ServicerBottomTab.Screen
+        options={{
+          tabBarIcon: ({ focused, color, size }) => (
+            <Octicons
+              name="home"
+              size={22}
+              color={focused ? "#35b2a5" : "#555"}
+            />
+          ),
+
+          tabBarLabel: ({ focused }) => (
+            <Text style={[styles.label, focused && { color: "#35b2a5" }]}>
+              Home
+            </Text>
+          ),
+        }}
+        name="Home"
+        component={ServiceApp}
+      />
+      <ServicerBottomTab.Screen
+        options={{
+          tabBarIcon: ({ focused, color, size }) => (
+            <Ionicons
+              name="chatbubbles-outline"
+              size={22}
+              color={focused ? "#35b2a5" : "#555"}
+            />
+          ),
+
+          tabBarLabel: ({ focused }) => (
+            <Text style={[styles.label, focused && { color: "#35b2a5" }]}>
+              Chat
+            </Text>
+          ),
+        }}
+        name="Chat"
+        component={ChatScreen}
+      />
+    </ServicerBottomTab.Navigator>
+  );
+};
 
 const MainNav = () => {
   const { user } = useGlobalState();
@@ -23,9 +140,9 @@ const MainNav = () => {
             <ActivityIndicator size="large" color="#fff" />
           </View>
         ) : user?.role === "service-provider" ? (
-          <ServiceApp />
+          <ServicerAppNavigation />
         ) : user?.role === "customer" ? (
-          <CustomerApp />
+          <CustomerAppNavigation />
         ) : (
           <></>
         )}
@@ -42,5 +159,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  label: {
+    fontSize: 13,
+    color: "#555c",
   },
 });

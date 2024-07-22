@@ -1,77 +1,124 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
+import { useAcceptHireRequest, useRejectHireRequest } from "../hooks/useHire";
 
-const userImage = `https://avatar.iran.liara.run/public/boy?username=chad${Math.floor(
-  Math.random() * 201 + 100
-)}`;
+const RequestJobDetails = ({ details, setFeed, setShowRequestedModal }) => {
+  const [aLoading, acceptHire] = useAcceptHireRequest();
+  const [rLoading, rejectHire] = useRejectHireRequest();
 
-const RequestJobDetails = () => {
+  const acceptRequest = async () => {
+    const data = await acceptHire(details._id);
+    if (data) {
+      setShowRequestedModal((prev) => ({ ...prev, visible: false }));
+      setFeed((prev) => ({
+        ...prev,
+        pending: prev.pending.filter((req) => req._id !== details._id),
+        accepted: [details, ...prev.accepted],
+      }));
+    }
+  };
+
+  const rejectRequest = async () => {
+    const data = await rejectHire(details._id);
+    if (data) {
+      setShowRequestedModal((prev) => ({ ...prev, visible: false }));
+      setFeed((prev) => ({
+        ...prev,
+        pending: prev.pending.filter((req) => req._id !== details._id),
+      }));
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={{ uri: userImage }} style={styles.headerImage} />
-        <Text style={styles.headerName}>Joseph Doe</Text>
-        <Text style={styles.headerTime}>12:43</Text>
+        {details?.customer?.photo && (
+          <Image
+            source={{ uri: details.customer.photo }}
+            style={styles.headerImage}
+          />
+        )}
+        <Text style={styles.headerName}>{details?.customer?.name}</Text>
+        <Text style={styles.headerTime}>12.43</Text>
       </View>
 
       <View style={styles.jobDetails}>
         {/**** job title */}
         <View style={styles.detail}>
           <Text style={styles.detailTitle}>Title </Text>
-          <Text style={styles.detailDescription}>
-            Lorem ipsum dolor sit amet consectetur
-          </Text>
+          <Text style={styles.detailDescription}>{details?.title}</Text>
         </View>
 
         {/*** budget */}
         <View style={styles.detail}>
           <Text style={styles.detailTitle}>Budget</Text>
-          <Text style={styles.detailDescription}>15GHC</Text>
-          <View style={styles.negotiable}>
-            <View style={styles.blob} />
-            <Text style={styles.negotiableText}>negotiable</Text>
-          </View>
+          <Text style={styles.detailDescription}>
+            {details?.bid?.budget} GHC
+          </Text>
+          {details?.bid?.negotiable && (
+            <View style={styles.negotiable}>
+              <View style={styles.blob} />
+              <Text style={styles.negotiableText}>negotiable</Text>
+            </View>
+          )}
         </View>
 
         {/*** job description */}
         <View style={[styles.detail, styles.description]}>
           <Text style={styles.detailTitle}>Job Description </Text>
           <Text style={[styles.detailDescription, styles.descriptionText]}>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facilis
-            ducimus possimus, cum laudantium iusto quam! Fuga, iure commodi
-            quaerat placeat labore cupiditate exercitationem repellat sint,
-            magnam neque quas deserunt reprehenderit!
+            {details?.jobDescription}
           </Text>
         </View>
       </View>
 
       <View style={styles.footer}>
         <TouchableOpacity
-          onPress={() => console.log("Accepted offer")}
+          onPress={acceptRequest}
           activeOpacity={0.8}
           style={styles.footerAction}
         >
-          <Text style={styles.footerText}>Accept</Text>
+          {aLoading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.footerText}>Accept</Text>
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => console.log("Declined offer")}
+          onPress={rejectRequest}
           activeOpacity={0.8}
           style={[styles.footerAction, styles.decline]}
         >
-          <Text style={styles.footerText}>Decline</Text>
+          {rLoading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.footerText}>Decline</Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-const CompletedJobDetails = () => {
+const CompletedJobDetails = ({ details }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={{ uri: userImage }} style={styles.headerImage} />
-        <Text style={styles.headerName}>Joseph Doe</Text>
+        {details?.customer?.photo && (
+          <Image
+            source={{ uri: details.customer.photo }}
+            style={styles.headerImage}
+          />
+        )}
+        <Text style={styles.headerName}>{details?.customer?.name}</Text>
         <Text style={styles.headerTime}>12:43</Text>
       </View>
 
@@ -81,9 +128,7 @@ const CompletedJobDetails = () => {
           <Text style={[styles.detailTitle, styles.resolvedBackground]}>
             Title
           </Text>
-          <Text style={[styles.detailDescription]}>
-            Lorem ipsum dolor sit amet consectetur
-          </Text>
+          <Text style={[styles.detailDescription]}>{details?.title}</Text>
         </View>
 
         {/*** budget */}
@@ -91,13 +136,17 @@ const CompletedJobDetails = () => {
           <Text style={[styles.detailTitle, styles.resolvedBackground]}>
             Budget
           </Text>
-          <Text style={[styles.detailDescription]}>15GHC</Text>
-          <View style={styles.negotiable}>
-            <View style={[styles.blob, styles.resolvedBackground]} />
-            <Text style={[styles.negotiableText, { color: "#555c" }]}>
-              negotiable
-            </Text>
-          </View>
+          <Text style={[styles.detailDescription]}>
+            {details?.bid?.budget} GHC
+          </Text>
+          {details?.bid?.negotiable && (
+            <View style={styles.negotiable}>
+              <View style={[styles.blob, styles.resolvedBackground]} />
+              <Text style={[styles.negotiableText, { color: "#555c" }]}>
+                negotiable
+              </Text>
+            </View>
+          )}
         </View>
 
         {/*** job description */}
@@ -106,10 +155,7 @@ const CompletedJobDetails = () => {
             Job Description
           </Text>
           <Text style={[styles.detailDescription, styles.descriptionText]}>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facilis
-            ducimus possimus, cum laudantium iusto quam! Fuga, iure commodi
-            quaerat placeat labore cupiditate exercitationem repellat sint,
-            magnam neque quas deserunt reprehenderit!
+            {details?.jobDescription}
           </Text>
         </View>
       </View>
@@ -167,6 +213,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     alignItems: "center",
+    marginBottom: 10,
   },
 
   description: {
@@ -193,8 +240,10 @@ const styles = StyleSheet.create({
   },
 
   descriptionText: {
+    alignSelf: "flex-start",
     fontWeight: "600",
     color: "#222d",
+    textAlign: "left",
   },
 
   negotiable: {
@@ -228,7 +277,7 @@ const styles = StyleSheet.create({
     right: 0,
     alignItems: "center",
     marginHorizontal: 15,
-    flexDirection: "row",
+    flexDirection: "row-reverse",
     gap: 10,
   },
 

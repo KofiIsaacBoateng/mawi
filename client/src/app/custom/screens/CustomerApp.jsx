@@ -142,6 +142,10 @@ const CustomerApp = () => {
           selectedHire={selectedHire}
           setSelectedHire={setSelectedHire}
           setShowRequestForm={setShowRequestForm}
+          jobLocation={[
+            location?.coords?.longitude,
+            location?.coords?.latitude,
+          ]}
         />
       )}
     </View>

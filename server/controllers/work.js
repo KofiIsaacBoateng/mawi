@@ -4,10 +4,30 @@ const { BadRequestError, NotFoundError } = require("../errors");
 const Conversation = require("../models/Conversation");
 const Message = require("../models/Message");
 
-module.exports.requestService = async (req, res) => {
-  const workData = await Work.create({ ...req.body, customer: req.userId });
-  /***** send websocket */
+const getServicerFeed = (status) => async (req, res) => {
+  let work = await Work.find({ servicer: req.userId, status }).select(
+    "+jobLocation"
+  );
 
+  res.status(StatusCodes.OK).json({
+    success: true,
+    data: work,
+    msg: "Found feed data!",
+  });
+};
+
+module.exports.getWork = getServicerFeed("accepted");
+module.exports.getIncomingWork = getServicerFeed("pending");
+module.exports.getCompletedWork = getServicerFeed("completed");
+
+module.exports.requestService = async (req, res) => {
+  const workData = await Work.create({
+    ...req.body,
+    jobLocation: [req.body.jobLocation[0] * 1, req.body.jobLocation[1] * 1],
+    customer: req.userId,
+  });
+
+  /***** send websocket */
   res.status(StatusCodes.OK).json({
     success: true,
     data: workData,
@@ -46,6 +66,7 @@ module.exports.acceptRequest = async (req, res) => {
   let conversation = await Conversation.create({
     servicer: work.servicer,
     customer: work.customer,
+    workId: req.params.id,
   });
   conversation = await conversation.populate("messages");
 
@@ -53,20 +74,38 @@ module.exports.acceptRequest = async (req, res) => {
 
   res.status(StatusCodes.OK).json({
     success: true,
-    data: {
-      work,
-      conversation,
-    },
+    data: work,
+    msg: "Service request has been accepted!",
+  });
+};
+
+module.exports.completeJob = async (req, res) => {
+  const work = await Work.findByIdAndUpdate(
+    req.params.id,
+    { status: "completed" },
+    { runValidators: true, new: true }
+  );
+
+  if (!work) {
+    throw new BadRequestError("Invalid request!");
+  }
+
+  // emit socket to both parties
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    data: work,
     msg: "Service request has been accepted!",
   });
 };
 
 module.exports.getAllConversations = async (req, res) => {
   const role = req.params.role === "service-provider" ? "servicer" : "customer";
+  console.log({ [role]: req.userId });
   const conversations = await Conversation.find({
     [role]: req.userId,
   });
-
+  console.log("got here: ", conversations);
   res.status(StatusCodes.OK).json({
     success: true,
     data: conversations,

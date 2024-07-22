@@ -1,17 +1,12 @@
-import { useState } from "react";
-import * as SecureStore from "expo-secure-store";
-import ToastAPI from "../../../utils/Toast";
-import { useGlobalState } from "../../../context/GlobalState";
-import { SERVICE_FEED } from "../../../utils/ENDPOINTS";
+import { COMPLETE_WORK } from "../../../utils/ENDPOINTS";
 
-const useFeed = () => {
+const useCompleteWork = () => {
   const { setAuthStatus } = useGlobalState();
   const [loading, setLoading] = useState(false);
   const Toast = new ToastAPI();
 
-  const fetchFeed = async (service, lnglat) => {
+  const completeWork = async (id) => {
     setLoading(true);
-
     const token = await SecureStore.getItemAsync("token");
     if (!token) {
       Toast.error(
@@ -23,8 +18,8 @@ const useFeed = () => {
     }
 
     try {
-      const res = await fetch(SERVICE_FEED(service, lnglat), {
-        method: "GET",
+      const res = await fetch(`${COMPLETE_WORK}/${id}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -34,10 +29,16 @@ const useFeed = () => {
       const { success, data, msg } = await res.json();
 
       if (success) {
-        Toast.success("Fetch feed successful!", msg);
+        Toast.success(
+          "Job complete added!",
+          "Congratulations on completing this job."
+        );
         return data;
       } else {
-        Toast.error("Fetch feed failed!", msg);
+        Toast.error(
+          "Request failed!",
+          "Failed to complete job! Please try again!"
+        );
         console.log(msg);
         return false;
       }
@@ -49,7 +50,7 @@ const useFeed = () => {
     }
   };
 
-  return [loading, fetchFeed];
+  return [loading, completeWork];
 };
 
-export default useFeed;
+export default useCompleteWork;

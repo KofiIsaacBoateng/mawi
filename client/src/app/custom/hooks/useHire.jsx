@@ -5,13 +5,13 @@ import { useGlobalState } from "../../../context/GlobalState";
 import { SEND_HIRE_REQUEST } from "../../../utils/ENDPOINTS";
 
 const useSendHireRequest = () => {
-  const { setAuthStatus, token } = useGlobalState();
+  const { setAuthStatus } = useGlobalState();
   const [loading, setLoading] = useState(false);
   const Toast = new ToastAPI();
 
   const sendRequest = async (requestData) => {
     setLoading(true);
-
+    const token = await SecureStore.getItemAsync("token");
     if (!token) {
       Toast.error(
         "Verification Error!",
@@ -35,10 +35,10 @@ const useSendHireRequest = () => {
 
       if (success) {
         Toast.success(
-          "Request successfully!",
+          "Request successful!",
           "Your hire request has been sent successfully"
         );
-        return data;
+        return true;
       } else {
         Toast.error("Hire request failed!", "Please try again!");
         console.log(msg);

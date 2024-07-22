@@ -8,32 +8,25 @@ import {
 } from "react-native";
 import React from "react";
 
-const userImage = `https://avatar.iran.liara.run/public/boy?username=chad${Math.floor(
-  Math.random() * 201 + 100
-)}`;
-
-const { width, height } = Dimensions.get("window");
-const NewRequestsCard = ({ wrap, setShowRequestedModal }) => {
+const NewRequestsCard = ({ wrap, setShowRequestedModal, job }) => {
   return (
     <View style={[styles.container, wrap && { flexGrow: 1 }]}>
       {/**** profile-photo */}
       <View style={styles.profileImageWrapper}>
         <Image
           source={{
-            uri: `https://avatar.iran.liara.run/public/boy?username=chad${Math.floor(
-              Math.random() * 201 + 100
-            )}`,
+            uri: job.customer.photo,
           }}
           style={styles.profileImage}
         />
       </View>
       {/***** name */}
       <View style={styles.details}>
-        <Text style={styles.name}>John Doe</Text>
+        <Text style={styles.name}>{job.customer.name}</Text>
 
         {/**** call to action */}
         <TouchableOpacity
-          onPress={() => setShowRequestedModal(true)}
+          onPress={() => setShowRequestedModal({ visible: true, details: job })}
           activeOpacity={0.8}
           style={styles.button}
         >
@@ -44,26 +37,28 @@ const NewRequestsCard = ({ wrap, setShowRequestedModal }) => {
   );
 };
 
-const CurrentJobCards = ({ showMap, setShowMap, wrap }) => {
+const CurrentJobCards = ({ showMap, setShowMap, wrap, job }) => {
   return (
     <View style={[styles.container, wrap && { flexGrow: 1 }]}>
       {/**** profile-photo */}
       <View style={styles.profileImageWrapper}>
-        <Image
-          source={{
-            uri: `https://avatar.iran.liara.run/public/boy?username=chad${Math.floor(
-              Math.random() * 201 + 100
-            )}`,
-          }}
-          style={styles.profileImage}
-        />
+        {job?.customer?.photo && (
+          <Image
+            source={{
+              uri: job.customer.photo,
+            }}
+            style={styles.profileImage}
+          />
+        )}
       </View>
       {/***** name */}
       <View style={styles.details}>
-        <Text style={styles.name}>John Doe</Text>
+        <Text style={styles.name}>{job?.customer?.name}</Text>
         {/**** call to action */}
         <TouchableOpacity
-          onPress={() => setShowMap((prev) => ({ visible: true, details: {} }))}
+          onPress={() =>
+            setShowMap((prev) => ({ visible: true, details: job }))
+          }
           activeOpacity={0.8}
           style={styles.button}
         >
@@ -74,26 +69,26 @@ const CurrentJobCards = ({ showMap, setShowMap, wrap }) => {
   );
 };
 
-const CompletedJobsCards = ({ wrap, setShowCompletedModal }) => {
+const CompletedJobsCards = ({ wrap, setShowCompletedModal, job }) => {
   return (
     <View style={[styles.container, wrap && { flexGrow: 1 }]}>
       {/**** profile-photo */}
       <View style={styles.profileImageWrapper}>
-        <Image
-          source={{
-            uri: `https://avatar.iran.liara.run/public/boy?username=chad${Math.floor(
-              Math.random() * 201 + 100
-            )}`,
-          }}
-          style={styles.profileImage}
-        />
+        {job?.customer?.photo && (
+          <Image
+            source={{
+              uri: job.customer.photo,
+            }}
+            style={styles.profileImage}
+          />
+        )}
       </View>
       {/***** name */}
       <View style={styles.details}>
-        <Text style={styles.name}>John Doe</Text>
+        <Text style={styles.name}>{job?.customer?.name}</Text>
         {/**** call to action */}
         <TouchableOpacity
-          onPress={() => setShowCompletedModal(true)}
+          onPress={() => setShowCompletedModal({ visible: true, details: job })}
           activeOpacity={0.8}
           style={styles.button}
         >

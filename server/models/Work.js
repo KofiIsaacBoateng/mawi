@@ -23,7 +23,10 @@ const WorkSchema = new mongoose.Schema(
     },
 
     bid: {
-      type: String,
+      type: {
+        budget: String,
+        negotiable: Boolean,
+      },
     },
 
     dateTime: {
@@ -36,7 +39,7 @@ const WorkSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: {
-        values: ["pending", "accepted", "rejected"],
+        values: ["pending", "accepted", "rejected", "completed"],
         message: "{VALUE} is an invalid status",
       },
       default: "pending",

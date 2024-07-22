@@ -55,6 +55,8 @@ const CustomTextInputs = ({
         secureTextEntry={type === "password"}
         style={styles.input}
         multiline={multiline}
+        autoCapitalize="none"
+        autoComplete="off"
       />
       <Animated.View style={[styles.label, labelAnimatedStyle]}>
         <Text style={[styles.labelText(touched[name], errors[name])]}>

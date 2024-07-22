@@ -8,6 +8,10 @@ export const REGISTER = `${URL}/auth/register`;
 export const SERVICE_FEED = (service, lnglat) =>
   `${URL}/services/service/${service || "none"}/within/${lnglat.join(",")}`;
 
+// servicer feed
+export const SERVICER_FEED = `${URL}/work`; // GET - param:id [accepted | pending | completed]
+export const COMPLETE_WORK = `${URL}/work/complete`; // PATCH - param:id
+
 // hires
 export const SEND_HIRE_REQUEST = `${URL}/work/send`; // POST
 export const REJECT_HIRE_REQUEST = `${URL}/work/reject`; // PATCH - param:id

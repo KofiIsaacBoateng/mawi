@@ -8,6 +8,7 @@ import {
   TextInput,
   Platform,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import React, { useRef, useState } from "react";
 import Animated, { SlideInRight, SlideOutRight } from "react-native-reanimated";
@@ -17,9 +18,17 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { formatDate, formatTime } from "../../../utils/dateFormatter";
+import ToastAPI from "../../../utils/Toast";
+import useSendHireRequest from "../hooks/useHire";
 
 const { width, height } = Dimensions.get("window");
-const RequestForm = ({ selectedHire, setSelectedHire, setShowRequestForm }) => {
+const RequestForm = ({
+  selectedHire,
+  setSelectedHire,
+  setShowRequestForm,
+  jobLocation,
+}) => {
+  const Toast = new ToastAPI();
   const insets = useSafeAreaInsets();
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
@@ -33,6 +42,7 @@ const RequestForm = ({ selectedHire, setSelectedHire, setShowRequestForm }) => {
   });
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState("date"); // 'date' or 'time'
+  const [loading, sendRequest] = useSendHireRequest();
 
   const onChange = (event, selectedDate) => {
     if (
@@ -68,11 +78,23 @@ const RequestForm = ({ selectedHire, setSelectedHire, setShowRequestForm }) => {
     }));
   };
 
-  const submit = () => {
-    const { title, description, budget, date } = requestData;
+  const submit = async () => {
+    const { title, description, budget, date, negotiable } = requestData;
     if (!title || !description || !budget || !date) {
-      console.log("Still have some values missing!");
+      Toast.error("Empty fields!", "You still have some values missing!");
       return;
+    }
+    const result = await sendRequest({
+      title,
+      jobDescription: description,
+      bid: { budget, negotiable },
+      servicer: selectedHire._id,
+      dateTime: date,
+      jobLocation,
+    });
+
+    if (result) {
+      setShowRequestForm(false);
     }
     console.log("submitting...: \n", requestData);
   };
@@ -238,7 +260,11 @@ const RequestForm = ({ selectedHire, setSelectedHire, setShowRequestForm }) => {
         activeOpacity={0.8}
         style={styles.submit}
       >
-        <Text style={styles.submitText}>Submit Hire Request</Text>
+        {loading ? (
+          <ActivityIndicator size="small" color="#fff" />
+        ) : (
+          <Text style={styles.submitText}>Submit Hire Request</Text>
+        )}
       </TouchableOpacity>
     </Animated.View>
   );

@@ -8,13 +8,14 @@ import {
 } from "../../../utils/ENDPOINTS";
 
 const useAcceptHireRequest = () => {
-  const { setAuthStatus, token } = useGlobalState();
+  const { setAuthStatus } = useGlobalState();
   const [loading, setLoading] = useState(false);
   const Toast = new ToastAPI();
 
   const acceptRequest = async (id) => {
     setLoading(true);
 
+    const token = await SecureStore.getItemAsync("token");
     if (!token) {
       Toast.error(
         "Verification Error!",
@@ -58,13 +59,13 @@ const useAcceptHireRequest = () => {
 };
 
 const useRejectHireRequest = () => {
-  const { setAuthStatus, token } = useGlobalState();
+  const { setAuthStatus } = useGlobalState();
   const [loading, setLoading] = useState(false);
   const Toast = new ToastAPI();
 
   const rejectRequest = async (id) => {
     setLoading(true);
-
+    const token = await SecureStore.getItemAsync("token");
     if (!token) {
       Toast.error(
         "Verification Error!",

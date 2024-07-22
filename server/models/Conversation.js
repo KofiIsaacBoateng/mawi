@@ -14,6 +14,12 @@ const ConversationSchema = new mongoose.Schema(
       required: true,
     },
 
+    workId: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "Work",
+      required: true,
+    },
+
     recent: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "Message",
@@ -35,7 +41,9 @@ ConversationSchema.virtual("messages", {
 ConversationSchema.pre(/^find/, function (next) {
   this.populate({ path: "customer", select: "name photo" });
   this.populate({ path: "servicer", select: "name photo" });
+  this.populate({ path: "workId", select: "title status" });
   this.populate("recent");
+  next();
 });
 
 module.exports = mongoose.model("Conversation", ConversationSchema);

@@ -7,7 +7,7 @@ import { useConvoContext } from "../context/ConversationContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const useSendMessage = () => {
-  const { setAuthStatus, token } = useGlobalState();
+  const { setAuthStatus } = useGlobalState();
   const { setMessages } = useConvoContext();
   const [loading, setLoading] = useState(false);
   const Toast = new ToastAPI();
@@ -15,6 +15,7 @@ const useSendMessage = () => {
   const sendMessage = async (messageData, convoId) => {
     setLoading(true);
 
+    const token = await SecureStore.getItemAsync("token");
     if (!token) {
       Toast.error(
         "Verification Error!",

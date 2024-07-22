@@ -1,21 +1,17 @@
 import { useState } from "react";
 import * as SecureStore from "expo-secure-store";
-import ToastAPI from "../../../utils/Toast";
-import { useGlobalState } from "../../../context/GlobalState";
+import ToastAPI from "../../utils/Toast";
+import { useGlobalState } from "../../context/GlobalState";
 import { GET_ALL_CONVERSATIONS, GET_CONVERSATION } from "../../utils/ENDPOINTS";
 
 const useGetConversations = () => {
-  const {
-    setAuthStatus,
-    token,
-    user: { role },
-  } = useGlobalState();
+  const { setAuthStatus } = useGlobalState();
   const [loading, setLoading] = useState(false);
   const Toast = new ToastAPI();
 
-  const getConvos = async () => {
+  const getConvos = async (role) => {
     setLoading(true);
-
+    const token = await SecureStore.getItemAsync("token");
     if (!token) {
       Toast.error(
         "Verification Error!",
@@ -37,7 +33,6 @@ const useGetConversations = () => {
       const { success, data, msg } = await res.json();
 
       if (success) {
-        Toast.success(msg, "Conversations have arrived");
         return data;
       } else {
         Toast.error("Request failed!", "Couldn't get conversations");

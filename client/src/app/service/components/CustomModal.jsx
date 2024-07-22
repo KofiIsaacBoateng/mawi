@@ -18,7 +18,7 @@ const CustomModal = ({ setShowModal, children }) => {
       style={styles.modal}
     >
       <TouchableOpacity
-        onPress={() => setShowModal(false)}
+        onPress={() => setShowModal((prev) => ({ ...prev, visible: false }))}
         style={styles.closeModal}
       >
         <Ionicons name="close" size={28} color="#888" />

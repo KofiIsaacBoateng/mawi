@@ -29,12 +29,10 @@ import Mapbox, {
 const ACCESS_TOKEN =
   "pk.eyJ1IjoiaWtoYXkiLCJhIjoiY2x5aXRma3JsMGcweDJsczh5dmR2dTZtMSJ9.S-Vx4yga6pqInFQ0fLcLnw";
 Mapbox.setAccessToken(ACCESS_TOKEN);
-const userImage = `https://avatar.iran.liara.run/public/boy?username=chad${Math.floor(
-  Math.random() * 201 + 100
-)}`;
+
 const { width, height } = Dimensions.get("window");
 
-const Map = ({ setShowMap }) => {
+const Map = ({ setShowMap, showMap: { details } }) => {
   const mapRef = useRef(null);
   const [location, setLocation] = useState(undefined);
   const [permissionStatus, setPermissionStatus] = useState(undefined);
@@ -61,9 +59,9 @@ const Map = ({ setShowMap }) => {
     const query = await fetch(
       `https://api.mapbox.com/directions/v5/mapbox/driving/${
         location?.coords?.longitude
-      },${
-        location?.coords?.latitude
-      };${-1.58393},${6.68893}?geometries=geojson&access_token=${ACCESS_TOKEN}`
+      },${location?.coords?.latitude};${details.jobLocation[0]},${[
+        details.jobLocation[1],
+      ]}?geometries=geojson&access_token=${ACCESS_TOKEN}`
     );
     const json = await query.json();
     const routes = json.routes[0].geometry;
@@ -71,29 +69,16 @@ const Map = ({ setShowMap }) => {
   }, [location]);
 
   useEffect(() => {
-    let locationUpdateInterval = undefined,
-      routeUpdateInterval = undefined;
+    let locationUpdateInterval = undefined;
     if (permissionStatus === "granted") {
       // get user location every 5000ms
-      locationUpdateInterval = setInterval(() => {
-        getUserLocation();
-        setGotLocation(true);
-      }, 5000);
-
-      routeUpdateInterval = setInterval(() => {
-        if (location?.coords) {
-          getDestinationRoute();
-        }
-      }, 5000);
+      getUserLocation();
+      setGotLocation(true);
     }
 
     return () => {
       if (locationUpdateInterval) {
         clearInterval(locationUpdateInterval);
-      }
-
-      if (routeUpdateInterval) {
-        clearInterval(routeUpdateInterval);
       }
     };
   }, [permissionStatus]);
@@ -150,7 +135,7 @@ const Map = ({ setShowMap }) => {
               zoomLevel={16}
               followUserLocation
               followPitch={60}
-              followZoomLevel={16}
+              followZoomLevel={20}
               followUserMode={UserTrackingMode.FollowWithHeading}
               animationMode="flyTo"
             />
@@ -165,9 +150,9 @@ const Map = ({ setShowMap }) => {
 
             <MarkerView
               id="destination-marker"
-              coordinate={[-1.58393, 6.68893]}
+              coordinate={[details.jobLocation[0], details.jobLocation[1]]}
             >
-              <CustomMarkerWithCallout />
+              <CustomMarkerWithCallout photo={details.customer.photo} />
             </MarkerView>
 
             {route && (
@@ -182,8 +167,8 @@ const Map = ({ setShowMap }) => {
   );
 };
 
-const CustomMarkerWithCallout = () => {
-  const [showCallout, setShowCallout] = useState(false);
+const CustomMarkerWithCallout = ({ photo }) => {
+  const [showCallout, setShowCallout] = useState(true);
   const calloutOpacity = useRef(new RNAnimated.Value(0)).current;
   const calloutPosition = useRef(new RNAnimated.Value(10)).current;
 
@@ -243,7 +228,7 @@ const CustomMarkerWithCallout = () => {
             <Image
               style={styles.customCalloutImage}
               source={{
-                uri: userImage,
+                uri: photo,
               }}
             />
             <View style={styles.tip} />
