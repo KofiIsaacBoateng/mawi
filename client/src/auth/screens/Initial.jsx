@@ -3,10 +3,7 @@ import React from "react";
 import LottieView from "lottie-react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width, height } = Dimensions.get("window");
 const Initial = () => {
@@ -16,7 +13,7 @@ const Initial = () => {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/**** title - mawi */}
-      <Text style={styles.title}>Mawi</Text>
+      <Text style={styles.title(insets.top + 10)}>Mawi</Text>
       {/***** banner */}
       <View style={styles.banner}>
         <LottieView
@@ -64,19 +61,19 @@ export default Initial;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#066f66",
+    backgroundColor: "#fff",
   },
 
-  title: {
+  title: (top) => ({
     position: "absolute",
-    top: 30,
+    top,
     width,
     textAlign: "center",
     fontSize: 30,
     fontWeight: "900",
-    color: "#fffc",
+    color: "#333c",
     textTransform: "uppercase",
-  },
+  }),
 
   banner: {
     width: "100%",
@@ -102,17 +99,17 @@ const styles = StyleSheet.create({
     width: 7,
     height: 7,
     borderRadius: 10,
-    backgroundColor: "#fff8",
+    backgroundColor: "#066f6688",
   },
 
   middle: {
     width: 25,
-    backgroundColor: "#fffa",
+    backgroundColor: "#066f66aa",
   },
 
   heading: {
-    color: "#fffc",
-    fontSize: 35,
+    color: "#333c",
+    fontSize: 27,
     fontWeight: "bold",
     textAlign: "center",
     width: "80%",
@@ -120,10 +117,10 @@ const styles = StyleSheet.create({
   },
 
   description: {
-    color: "#fffa",
-    fontSize: 15,
+    color: "#333c",
+    fontSize: 16,
     textAlign: "center",
-    marginTop: 5,
+    marginTop: 10,
     width: "80%",
     alignSelf: "center",
   },
@@ -141,7 +138,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
-    backgroundColor: "#fff",
+    backgroundColor: "#066f66",
   },
 
   login: {
@@ -155,9 +152,12 @@ const styles = StyleSheet.create({
   buttonText: {
     fontWeight: "800",
     fontSize: 16,
+    color: "#fff",
   },
 
   loginText: {
-    color: "#fffc",
+    color: "#066f66cc",
+    fontWeight: "900",
+    fontSize: 16,
   },
 });

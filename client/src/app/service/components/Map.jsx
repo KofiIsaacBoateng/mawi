@@ -69,16 +69,27 @@ const Map = ({ setShowMap, showMap: { details } }) => {
   }, [location]);
 
   useEffect(() => {
-    let locationUpdateInterval = undefined;
+    let locationUpdateInterval = undefined,
+      routeUpdateInterval = undefined;
     if (permissionStatus === "granted") {
       // get user location every 5000ms
-      getUserLocation();
-      setGotLocation(true);
+      locationUpdateInterval = setInterval(() => {
+        getUserLocation();
+        setGotLocation(true);
+      }, 5000);
+
+      routeUpdateInterval = setInterval(() => {
+        getDestinationRoute();
+      }, 2000);
     }
 
     return () => {
       if (locationUpdateInterval) {
         clearInterval(locationUpdateInterval);
+      }
+
+      if (routeUpdateInterval) {
+        clearInterval(routeUpdateInterval);
       }
     };
   }, [permissionStatus]);

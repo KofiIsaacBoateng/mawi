@@ -79,8 +79,7 @@ const useGetConvo = () => {
       const { success, data, msg } = await res.json();
 
       if (success) {
-        Toast.success(msg, "Got conversation successfully!");
-        return data;
+        return data.messages;
       } else {
         Toast.error("Request failed!", "Couldn't this conversation");
         console.log(msg);

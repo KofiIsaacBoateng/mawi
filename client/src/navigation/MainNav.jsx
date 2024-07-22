@@ -5,11 +5,13 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import ServiceApp from "../app/service/screens/ServiceApp";
 import CustomerApp from "../app/custom/screens/CustomerApp";
 import { useGlobalState } from "../context/GlobalState";
-import ConvoContext from "../app/context/ConversationContext";
+import ConvoContext, {
+  useConvoContext,
+} from "../app/context/ConversationContext";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ChatScreen from "../app/screens/ChatScreen";
 
@@ -21,6 +23,8 @@ const CustomerBottomTab = createBottomTabNavigator();
 const ServicerBottomTab = createBottomTabNavigator();
 
 const CustomerAppNavigation = () => {
+  const { showBottomTab } = useConvoContext(false);
+
   return (
     <CustomerBottomTab.Navigator
       screenOptions={{
@@ -28,6 +32,7 @@ const CustomerAppNavigation = () => {
         tabBarStyle: {
           height: 55,
           position: "absolute",
+          bottom: showBottomTab ? 0 : -60,
           zIndex: 3,
         },
       }}
@@ -75,6 +80,8 @@ const CustomerAppNavigation = () => {
 };
 
 const ServicerAppNavigation = () => {
+  const { showBottomTab } = useConvoContext();
+
   return (
     <ServicerBottomTab.Navigator
       screenOptions={{
@@ -82,6 +89,7 @@ const ServicerAppNavigation = () => {
         tabBarStyle: {
           height: 55,
           position: "absolute",
+          transform: [{ translateY: showBottomTab ? 0 : 60 }],
           zIndex: 3,
         },
       }}

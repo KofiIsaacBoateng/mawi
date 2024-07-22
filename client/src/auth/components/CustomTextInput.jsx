@@ -102,10 +102,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     // borderWidth: 1,
     borderColor: !touched
-      ? "#fff"
+      ? "#555c"
       : touched && error
       ? "firebrick"
-      : "limegreen",
+      : "#066f66",
     borderRadius: 5,
     justifyContent: "center",
   }),
@@ -113,13 +113,13 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     letterSpacing: 1,
-    color: "#fff",
+    color: "#333",
   },
 
   label: {
     position: "absolute",
     marginLeft: 15,
-    backgroundColor: "#066f66",
+    backgroundColor: "#fff",
     padding: 5,
   },
   status: {
@@ -139,6 +139,6 @@ const styles = StyleSheet.create({
 
   labelText: (touched, error) => ({
     letterSpacing: 0.5,
-    color: !touched ? "#fff" : touched && error ? "firebrick" : "limegreen",
+    color: !touched ? "#333c" : touched && error ? "firebrick" : "#066f66",
   }),
 });

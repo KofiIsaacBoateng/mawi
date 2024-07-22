@@ -8,11 +8,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const useSendMessage = () => {
   const { setAuthStatus } = useGlobalState();
-  const { setMessages } = useConvoContext();
+  const { setMessages, socketIo } = useConvoContext();
   const [loading, setLoading] = useState(false);
   const Toast = new ToastAPI();
 
-  const sendMessage = async (messageData, convoId) => {
+  const sendMessage = async (messageData) => {
     setLoading(true);
 
     const token = await SecureStore.getItemAsync("token");
@@ -26,7 +26,7 @@ const useSendMessage = () => {
     }
 
     try {
-      const res = await fetch(`${SEND_MESSAGE}/${convoId}`, {
+      const res = await fetch(`${SEND_MESSAGE}`, {
         method: "POST",
         body: JSON.stringify(messageData),
         headers: {
@@ -38,20 +38,19 @@ const useSendMessage = () => {
       const { success, data, msg } = await res.json();
 
       if (success) {
-        Toast.success(
-          "Request successfully!",
-          "Your hire request has been sent successfully"
-        );
+        socketIo?.emit("new-message", data);
+        console.log("socket emitted successfully!");
         let newMessages;
         setMessages((prev) => {
           newMessages = [...prev, data];
+          return newMessages;
         });
 
-        await AsyncStorage.setItem("messages", JSON.stringify(newMessages));
+        // await AsyncStorage.setItem("messages", JSON.stringify(newMessages));
 
         return true;
       } else {
-        Toast.error("Hire request failed!", "Please try again!");
+        Toast.error("Message send failed!", "Please try again!");
         console.log(msg);
         return false;
       }

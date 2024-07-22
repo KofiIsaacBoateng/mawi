@@ -101,11 +101,9 @@ module.exports.completeJob = async (req, res) => {
 
 module.exports.getAllConversations = async (req, res) => {
   const role = req.params.role === "service-provider" ? "servicer" : "customer";
-  console.log({ [role]: req.userId });
   const conversations = await Conversation.find({
     [role]: req.userId,
   });
-  console.log("got here: ", conversations);
   res.status(StatusCodes.OK).json({
     success: true,
     data: conversations,
@@ -130,17 +128,19 @@ module.exports.getConversation = async (req, res) => {
 };
 
 module.exports.sendMessage = async (req, res) => {
-  const { message, receiver } = req.body;
+  const { message, receiver, conversationId } = req.body;
 
-  const msg = await Message.create({
+  let msg = await Message.create({
     message,
     receiver,
     sender: req.userId,
-    conversationId: req.params.id,
+    conversationId,
   });
+
+  msg = await msg.populate("receiver sender");
   // update conversations recent
   await Conversation.findByIdAndUpdate(
-    req.params.id,
+    conversationId,
     { recent: msg._id },
     { runValidators: true, new: true }
   );

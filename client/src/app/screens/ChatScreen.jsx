@@ -3,6 +3,7 @@ import {
   Dimensions,
   Image,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -43,13 +44,14 @@ const ChatScreen = () => {
 
   useEffect(() => {
     loadConversations();
-  }, []);
+  }, [showMessageScreen]);
 
   return (
     <View style={[styles.container]}>
       <View style={[styles.header, { paddingTop: insets.top }]}>
         <Text style={styles.headerText}>Chats</Text>
       </View>
+      <StatusBar barStyle="dark-content" />
 
       {/***** convo lists */}
       <ScrollView
@@ -99,6 +101,7 @@ const ConvoElement = ({
   setShowMessageScreen,
 }) => {
   const { user } = useGlobalState();
+  const { setShowBottomTab } = useConvoContext();
   const partner =
     user?.role === "service-provider" ? convo.customer : convo.servicer;
   return (
@@ -106,6 +109,7 @@ const ConvoElement = ({
       onPress={() => {
         setActiveConvo(convo);
         setShowMessageScreen(true);
+        setShowBottomTab(false);
       }}
       activeOpacity={0.8}
       style={[
@@ -146,7 +150,7 @@ const ConvoElement = ({
   );
 };
 
-const Loader = () => {
+export const Loader = () => {
   return (
     <View style={[styles.loader]}>
       <ActivityIndicator size="large" color="#35b2a5" />

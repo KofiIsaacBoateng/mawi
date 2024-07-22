@@ -39,6 +39,7 @@ const ServiceForm = ({ setActiveRole }) => {
       role: "service-provider",
       title: "",
       about: "",
+      location: [-1.574233, 6.6789],
     },
     validationSchema: registrationValidationSchema,
     onSubmit: submit,
@@ -242,7 +243,7 @@ const WorkInfo = ({ setCurrentPage, currentPage, formik, loading }) => {
           style={[
             styles.button,
             styles.doubleButtonRow,
-            { backgroundColor: "#0c0d34" },
+            { backgroundColor: "#066f66" },
           ]}
         >
           {loading ? (
@@ -265,7 +266,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "#066f66",
+    backgroundColor: "#fff",
   },
 
   back: {
@@ -274,12 +275,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 30,
-    backgroundColor: "#0005",
+    backgroundColor: "#0009",
     marginLeft: 10,
   },
 
   heading: {
-    color: "#fff",
+    color: "#333c",
     fontSize: 18,
     fontWeight: "700",
   },
@@ -325,7 +326,7 @@ const styles = StyleSheet.create({
   button: {
     width: "90%",
     paddingVertical: 15,
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
     marginTop: "auto",
     zIndex: 10,
     alignItems: "center",
@@ -337,7 +338,7 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    color: "#000c",
+    color: "#fff",
     fontSize: 18,
     fontWeight: "700",
   },

@@ -31,6 +31,6 @@ router.route("/complete/:id").patch(completeJob);
 // conversation channels
 router.route("/messaging/convos/:role").get(getAllConversations);
 router.route("/messaging/convo/:id").get(getConversation);
-router.route("/messaging/send-message/:id").post(sendMessage);
+router.route("/messaging/send-message").post(sendMessage);
 
 module.exports = router;

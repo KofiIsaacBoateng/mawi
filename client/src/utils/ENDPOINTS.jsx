@@ -1,4 +1,5 @@
 export const URL = "http://192.168.43.14:5000/api/v1";
+export const SOCKET_ENDPOINT = "http://192.168.43.14:5000";
 
 // auth
 export const LOGIN = `${URL}/auth/login`;

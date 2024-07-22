@@ -121,7 +121,7 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#066f66",
+    backgroundColor: "#fff",
     width,
   },
 
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 25,
-    color: "#fff",
+    color: "#333c",
     fontWeight: "bold",
     width: width * 0.85,
     marginTop: -20,
@@ -153,11 +153,11 @@ const styles = StyleSheet.create({
 
   description: {
     fontSize: 15,
-    color: "#fffc",
+    color: "#000c",
   },
 
   signup: {
-    color: "#45012f",
+    color: "#066f66",
     fontSize: 16,
     fontWeight: "800",
   },
@@ -177,12 +177,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
-    backgroundColor: "#fff",
+    backgroundColor: "#066f66",
     marginBottom: 20,
   },
 
   buttonText: {
     fontWeight: "800",
     fontSize: 16,
+    color: "#fff",
   },
 });

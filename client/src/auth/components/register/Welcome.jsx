@@ -56,12 +56,12 @@ const styles = StyleSheet.create({
 
   heading: {
     fontSize: 30,
-    color: "#fff",
+    color: "#333",
     fontWeight: "700",
   },
 
   description: {
-    color: "#fffc",
+    color: "#333c",
     fontSize: 16,
   },
 
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   option: {
     width: "100%",
     height: height * 0.35,
-    backgroundColor: "#fff5",
+    backgroundColor: "#066f6655",
     borderRadius: 15,
   },
 
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   },
 
   optionTitle: {
-    color: "#fff",
+    color: "#066f66",
     fontSize: 20,
     fontWeight: "bold",
     marginLeft: 20,
